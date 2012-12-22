@@ -47,25 +47,32 @@ func serve404(w http.ResponseWriter) {
 }
 
 func AddHandler(writer http.ResponseWriter, request *http.Request) {
+	log.Printf("serving %v %v", request.Method, request.URL.Path[1:])
 	if request.Method != "POST" {
 		serve404(writer)
 		return
 	}
+	title := request.FormValue("title")
+	description := request.FormValue("description")
+	fmt.Fprintf(writer, " title description %v %v", title, description)
+
 }
 
 func main() {
 	flag.Parse()
 	//connect to mongoDB
 	mongoConn := backend.NewMongoDBConn()
-	s := mongoConn.Connect("localhost")
-	defer s.Close()
+	_ = mongoConn.Connect("localhost")
+	defer mongoConn.Stop()
+
+	log.Printf("Starting server on %v", *port)
 	ServeFile("/", *templateDir+"/index.html", "text/html")
-	http.Handle("add/", http.HandlerFunc(AddHandler))
+	http.Handle("/add/", http.HandlerFunc(AddHandler))
 	ServeFile("/css/bootstrap.css", *cssDir+"/bootstrap.css", "text/css")
 	ServeFile("/js/bootstrap.js", *jsDir+"/bootstrap.js", "application/javascript")
-	if err := http.ListenAndServe(fmt.Sprintf(":%d", *port), nil); err != nil {
+	err := http.ListenAndServe(fmt.Sprintf(":%d", *port), nil)
+	if err != nil {
 		log.Fatalf("Could not start web server: %v", err)
-		return
 	}
 
 }
