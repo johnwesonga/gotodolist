@@ -15,7 +15,7 @@ func NewMongoDBConn() *MongoDBConn {
 	return &MongoDBConn{}
 }
 
-func (m *MongoDBConn) Connect(url string) (*mgo.Session){
+func (m *MongoDBConn) Connect(url string) *mgo.Session {
 	session, err := mgo.Dial(url)
 	if err != nil {
 		panic(err)
@@ -24,8 +24,8 @@ func (m *MongoDBConn) Connect(url string) (*mgo.Session){
 	return m.session
 }
 
-func (m *MongoDBConn) Stop(){
-  m.session.Close()
+func (m *MongoDBConn) Stop() {
+	m.session.Close()
 }
 
 func (m *MongoDBConn) AddToDo(title, description string) (err error) {

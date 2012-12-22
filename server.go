@@ -1,12 +1,12 @@
 package main
 
 import (
+	"./backend"
 	"flag"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"./backend"
 	"os"
 )
 
@@ -46,11 +46,11 @@ func serve404(w http.ResponseWriter) {
 	io.WriteString(w, "Not Found")
 }
 
-func AddHandler(writer http.ResponseWriter, request *http.Request){
-  if request.Method != "POST"{
-    serve404(writer)
-    return
-  }
+func AddHandler(writer http.ResponseWriter, request *http.Request) {
+	if request.Method != "POST" {
+		serve404(writer)
+		return
+	}
 }
 
 func main() {
@@ -67,5 +67,5 @@ func main() {
 		log.Fatalf("Could not start web server: %v", err)
 		return
 	}
-	
+
 }
