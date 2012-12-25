@@ -59,7 +59,7 @@ func AddHandler(writer http.ResponseWriter, request *http.Request) {
 	log.Printf(" title description %v %v", title, description)
 	err := mongoConn.AddToDo(title, description)
 	if err == nil{
-	  http.Redirect(writer, request, "/", http.StatusOK)
+	  http.Redirect(writer, request, "/", http.StatusMovedPermanently)
 	  return
 	}
   
