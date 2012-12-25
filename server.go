@@ -10,6 +10,8 @@ import (
 	"os"
 )
 
+var mongoConn *backend.MongoDBConn
+
 var (
 	port        = flag.Int("port", 8090, "port server is on")
 	templateDir = flag.String("templateDir", "templates", "folder where template files will be served from")
@@ -54,14 +56,20 @@ func AddHandler(writer http.ResponseWriter, request *http.Request) {
 	}
 	title := request.FormValue("title")
 	description := request.FormValue("description")
-	fmt.Fprintf(writer, " title description %v %v", title, description)
-
+	log.Printf(" title description %v %v", title, description)
+	err := mongoConn.AddToDo(title, description)
+	if err == nil{
+	  http.Redirect(writer, request, "/", http.StatusOK)
+	  return
+	}
+  
 }
+
 
 func main() {
 	flag.Parse()
 	//connect to mongoDB
-	mongoConn := backend.NewMongoDBConn()
+	mongoConn = backend.NewMongoDBConn()
 	_ = mongoConn.Connect("localhost")
 	defer mongoConn.Stop()
 

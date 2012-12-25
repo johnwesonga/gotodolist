@@ -29,7 +29,7 @@ func (m *MongoDBConn) Stop() {
 }
 
 func (m *MongoDBConn) AddToDo(title, description string) (err error) {
-	c := m.session.DB("test").C("people")
+	c := m.session.DB("test").C("todo")
 	err = c.Insert(&ToDo{title, description})
 	if err != nil {
 		panic(err)
