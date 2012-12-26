@@ -1,7 +1,9 @@
 package backend
 
-import ("labix.org/v2/mgo"
-"labix.org/v2/mgo/bson")
+import (
+	"labix.org/v2/mgo"
+	"labix.org/v2/mgo/bson"
+)
 
 type MongoDBConn struct {
 	session *mgo.Session
@@ -38,15 +40,15 @@ func (m *MongoDBConn) AddToDo(title, description string) (err error) {
 	return nil
 }
 
-func (m *MongoDBConn) ListToDo(){
-  
+func (m *MongoDBConn) ListToDo() {
+
 }
 
-func (m *MongoDBConn) DeleteToDo(id string)  {
+func (m *MongoDBConn) DeleteToDo(id string) {
 	collection := m.session.DB("test").C("todo")
 	err := collection.Find(bson.M{"_id": id})
 	if err != nil {
 		panic(err)
 	}
-	
+
 }

@@ -58,15 +58,13 @@ func AddHandler(writer http.ResponseWriter, request *http.Request) {
 	description := request.FormValue("description")
 	log.Printf(" title description %v %v", title, description)
 	err := mongoConn.AddToDo(title, description)
-	if err != nil{
-	  //http.Redirect(writer, request, "/", http.StatusMovedPermanently)
-	  panic(err)
-	  fmt.Fprintln(writer,"fail")
-	  return
+	if err != nil {
+		panic(err)
+		fmt.Fprintln(writer, "fail")
+		return
 	}
-  fmt.Fprintln(writer,"success")
+	fmt.Fprintln(writer, "success")
 }
-
 
 func main() {
 	flag.Parse()
