@@ -77,7 +77,7 @@ func main() {
 	ServeFile("/", *templateDir+"/index.html", "text/html")
 	http.Handle("add/", http.HandlerFunc(AddHandler))
 	ServeFile("/css/bootstrap.css", *cssDir+"/bootstrap.css", "text/css")
-	ServeFile("/js/bootstrap.js", *jsDir+"/bootstrap.js", "application/javascript")
+	ServeFile("/js/main.js", *jsDir+"/bootstrap.js", "application/javascript")
 	err := http.ListenAndServe(fmt.Sprintf(":%d", *port), nil)
 	if err != nil {
 		log.Fatalf("Could not start web server: %v", err)
