@@ -75,7 +75,7 @@ func main() {
 
 	log.Printf("Starting server on %v", *port)
 	ServeFile("/", *templateDir+"/index.html", "text/html")
-	http.Handle("/add/", http.HandlerFunc(AddHandler))
+	http.Handle("add/", http.HandlerFunc(AddHandler))
 	ServeFile("/css/bootstrap.css", *cssDir+"/bootstrap.css", "text/css")
 	ServeFile("/js/bootstrap.js", *jsDir+"/bootstrap.js", "application/javascript")
 	err := http.ListenAndServe(fmt.Sprintf(":%d", *port), nil)
