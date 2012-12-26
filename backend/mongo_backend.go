@@ -42,12 +42,11 @@ func (m *MongoDBConn) ListToDo(){
   
 }
 
-func (m *MongoDBConn) DeleteToDo(id string) (err error) {
+func (m *MongoDBConn) DeleteToDo(id string)  {
 	collection := m.session.DB("test").C("todo")
-	result := ToDo{}
-	err = collection.Find(bson.M{"_id": id})
+	err := collection.Find(bson.M{"_id": id})
 	if err != nil {
 		panic(err)
 	}
-	return nil
+	
 }

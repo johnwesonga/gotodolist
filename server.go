@@ -58,11 +58,13 @@ func AddHandler(writer http.ResponseWriter, request *http.Request) {
 	description := request.FormValue("description")
 	log.Printf(" title description %v %v", title, description)
 	err := mongoConn.AddToDo(title, description)
-	if err == nil{
-	  http.Redirect(writer, request, "/", http.StatusMovedPermanently)
+	if err != nil{
+	  //http.Redirect(writer, request, "/", http.StatusMovedPermanently)
+	  panic(err)
+	  fmt.Fprintln(writer,"fail")
 	  return
 	}
-  
+  fmt.Fprintln(writer,"success")
 }
 
 
@@ -75,9 +77,9 @@ func main() {
 
 	log.Printf("Starting server on %v", *port)
 	ServeFile("/", *templateDir+"/index.html", "text/html")
-	http.Handle("add/", http.HandlerFunc(AddHandler))
+	http.Handle("/add/", http.HandlerFunc(AddHandler))
 	ServeFile("/css/bootstrap.css", *cssDir+"/bootstrap.css", "text/css")
-	ServeFile("/js/main.js", *jsDir+"/bootstrap.js", "application/javascript")
+	ServeFile("/js/main.js", *jsDir+"/main.js", "application/javascript")
 	err := http.ListenAndServe(fmt.Sprintf(":%d", *port), nil)
 	if err != nil {
 		log.Fatalf("Could not start web server: %v", err)

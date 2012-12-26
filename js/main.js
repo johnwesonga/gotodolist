@@ -4,6 +4,8 @@ $(document).ready( function(){
   var description = $("#description");
   var add = $("#add");
   var postURL = "add/";
+  var divError = $("#error");
+  var divSuccess = $("#success");
   //event handlers
   $(add).click( function(e){
     var data = "title=" + title.val() + "&description=" + description.val();
@@ -12,11 +14,10 @@ $(document).ready( function(){
           url: postURL,
           data: data,
         success: function(responseText) {
-          if(responseText == "0"){
-            $(divError).show();
+          if(responseText = "success"){
+            $(divSuccess).show();            
           }else{
-            $(divSuccess).show();
-            $(divReset).show()
+           $(divError).show();
              //$(submit).attr("disabled", true);
           }
         }

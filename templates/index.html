@@ -49,9 +49,20 @@
         <h2>GoToDo</h2>
         <p>A Todo List app written in Go</p>
       </div>
-	
+	<div class="row">
+	<div class="span4">
+		<div id="error" class="alert alert-error" style="display:none;">
+		  <h4 class="alert-heading">Error:</h4> Unable to locate email address from specific domain
+		</div>
+	</div>
+	<div class="span4">
+		<div id="success" class="alert alert-success" style="display:none;">
+		  <h4 class="alert-heading">ToDo item added!</h4>
+		</div>
+	</div>
+	</div>
 
-    <form class="form-horizontal" action="add/" method="POST">
+    <form method="POST" action="add/">
 	  <div class="control-group">
 	    <label class="control-label" for="inputEmail">Title</label>
 	    <div class="controls">
@@ -66,10 +77,11 @@
 	  </div>
 	  <div class="control-group">
 	    <div class="controls">
-	      <button type="submit" class="btn">Add</button>
+	      <button type="submit" class="btn" id="add">Add</button>
 	    </div>
 	  </div>
 	</form>
+
 
       <hr>
 
