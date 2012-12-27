@@ -4,6 +4,7 @@ import (
 	"./backend"
 	"flag"
 	"fmt"
+	"html/template"
 	"io"
 	"log"
 	"net/http"
@@ -66,6 +67,15 @@ func AddHandler(writer http.ResponseWriter, request *http.Request) {
 	fmt.Fprintln(writer, "success")
 }
 
+func IndexHandler(writer http.ResponseWriter, request *http.Request){
+  results := mongoConn.ListToDo()
+  for _, val := range results{
+    log.Printf("%v", val.Title)
+  }
+  t, _ := template.ParseFiles(*templateDir+"/index.html")
+  t.Execute(writer, results)
+}
+
 func main() {
 	flag.Parse()
 	//connect to mongoDB
@@ -74,7 +84,7 @@ func main() {
 	defer mongoConn.Stop()
 
 	log.Printf("Starting server on %v", *port)
-	ServeFile("/", *templateDir+"/index.html", "text/html")
+	http.Handle("/", http.HandlerFunc(IndexHandler))
 	http.Handle("/add/", http.HandlerFunc(AddHandler))
 	ServeFile("/css/bootstrap.css", *cssDir+"/bootstrap.css", "text/css")
 	ServeFile("/js/main.js", *jsDir+"/main.js", "application/javascript")

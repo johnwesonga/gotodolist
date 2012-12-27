@@ -81,7 +81,17 @@
 	    </div>
 	  </div>
 	</form>
+	
+	<table class="table table-striped table-hover">
+	 	{{range .}}
+		<tr>
+			<td>{{.Title}}</td>
+			<td>{{.Description}}</td>
+			</tr>
 
+
+		{{end}}
+	</table>
 
       <hr>
 

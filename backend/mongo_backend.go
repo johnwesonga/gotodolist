@@ -24,7 +24,7 @@ func (m *MongoDBConn) Connect(url string) *mgo.Session {
 		panic(err)
 	}
 	m.session = session
-	return m.session
+	return m.session.Clone()
 }
 
 func (m *MongoDBConn) Stop() {
@@ -36,12 +36,20 @@ func (m *MongoDBConn) AddToDo(title, description string) (err error) {
 	err = c.Insert(&ToDo{title, description})
 	if err != nil {
 		panic(err)
+		return err
 	}
 	return nil
 }
 
-func (m *MongoDBConn) ListToDo() {
-
+func (m *MongoDBConn) ListToDo() ([]ToDo){
+  results := []ToDo{}
+  collection := m.session.DB("test").C("todo")
+  iter := collection.Find(nil).Limit(100).Iter()
+  err := iter.All(&results)
+  if err != nil {
+      panic(iter.Err())
+  }
+  return results
 }
 
 func (m *MongoDBConn) DeleteToDo(id string) {
