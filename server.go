@@ -67,13 +67,13 @@ func AddHandler(writer http.ResponseWriter, request *http.Request) {
 	fmt.Fprintln(writer, "success")
 }
 
-func IndexHandler(writer http.ResponseWriter, request *http.Request){
-  results := mongoConn.ListToDo()
-  for _, val := range results{
-    log.Printf("%v", val.Title)
-  }
-  t, _ := template.ParseFiles(*templateDir+"/index.html")
-  t.Execute(writer, results)
+func IndexHandler(writer http.ResponseWriter, request *http.Request) {
+	results := mongoConn.ListToDo()
+	for _, val := range results {
+		log.Printf("%v", val.Title)
+	}
+	t, _ := template.ParseFiles(*templateDir + "/index.html")
+	t.Execute(writer, results)
 }
 
 func main() {

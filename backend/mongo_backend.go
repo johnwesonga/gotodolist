@@ -41,15 +41,15 @@ func (m *MongoDBConn) AddToDo(title, description string) (err error) {
 	return nil
 }
 
-func (m *MongoDBConn) ListToDo() ([]ToDo){
-  results := []ToDo{}
-  collection := m.session.DB("test").C("todo")
-  iter := collection.Find(nil).Limit(100).Iter()
-  err := iter.All(&results)
-  if err != nil {
-      panic(iter.Err())
-  }
-  return results
+func (m *MongoDBConn) ListToDo() []ToDo {
+	results := []ToDo{}
+	collection := m.session.DB("test").C("todo")
+	iter := collection.Find(nil).Limit(100).Iter()
+	err := iter.All(&results)
+	if err != nil {
+		panic(iter.Err())
+	}
+	return results
 }
 
 func (m *MongoDBConn) DeleteToDo(id string) {
