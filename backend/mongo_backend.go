@@ -10,6 +10,7 @@ type MongoDBConn struct {
 }
 
 type ToDo struct {
+  Id          bson.ObjectId    "_id,omitempty"
 	Title       string
 	Description string
 }
@@ -33,7 +34,7 @@ func (m *MongoDBConn) Stop() {
 
 func (m *MongoDBConn) AddToDo(title, description string) (err error) {
 	c := m.session.DB("test").C("todo")
-	err = c.Insert(&ToDo{title, description})
+	err = c.Insert(&ToDo{"", title, description})
 	if err != nil {
 		panic(err)
 		return err

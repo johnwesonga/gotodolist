@@ -8,45 +8,20 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"os"
 )
 
-var mongoConn *backend.MongoDBConn
+const templateDir = "templates"
 
 var (
 	port        = flag.Int("port", 8090, "port server is on")
-	templateDir = flag.String("templateDir", "templates", "folder where template files will be served from")
-	cssDir      = flag.String("css", "css", "folder where css is stored")
-	jsDir       = flag.String("js", "js", "folder where css is stored")
+	mongoConn *backend.MongoDBConn
 )
 
-func FileHandler(fileName, mimeType string, writer http.ResponseWriter, request *http.Request) {
-	writer.Header().Set("Content-Type", mimeType)
-	fileObj, err := os.Open(fileName)
-	if err != nil {
-		log.Fatalf("Could not open %s, %v", fileName, err)
-		return
-	}
-	defer fileObj.Close()
-	_, err = io.Copy(writer, fileObj)
-	if err != nil {
-		log.Printf("Could not read %s, %v", fileName, err)
-		io.WriteString(writer, "Error reading file.")
-		return
-	}
 
-}
-
-func ServeFile(path, fileName, mimeType string) {
-	http.Handle(path, http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		FileHandler(fileName, mimeType, writer, request)
-	}))
-}
-
-func serve404(w http.ResponseWriter) {
-	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	w.WriteHeader(http.StatusNotFound)
-	io.WriteString(w, "Not Found")
+func serve404(writer http.ResponseWriter) {
+	writer.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	writer.WriteHeader(http.StatusNotFound)
+	io.WriteString(writer, "Not Found")
 }
 
 func AddHandler(writer http.ResponseWriter, request *http.Request) {
@@ -69,10 +44,7 @@ func AddHandler(writer http.ResponseWriter, request *http.Request) {
 
 func IndexHandler(writer http.ResponseWriter, request *http.Request) {
 	results := mongoConn.ListToDo()
-	for _, val := range results {
-		log.Printf("%v", val.Title)
-	}
-	t, _ := template.ParseFiles(*templateDir + "/index.html")
+	t, _ := template.ParseFiles(templateDir + "/index.html")
 	t.Execute(writer, results)
 }
 
@@ -86,8 +58,8 @@ func main() {
 	log.Printf("Starting server on %v", *port)
 	http.Handle("/", http.HandlerFunc(IndexHandler))
 	http.Handle("/add/", http.HandlerFunc(AddHandler))
-	ServeFile("/css/bootstrap.css", *cssDir+"/bootstrap.css", "text/css")
-	ServeFile("/js/main.js", *jsDir+"/main.js", "application/javascript")
+	http.Handle("/css/", http.FileServer(http.Dir(".")))
+	http.Handle("/js/", http.FileServer(http.Dir(".")))
 	err := http.ListenAndServe(fmt.Sprintf(":%d", *port), nil)
 	if err != nil {
 		log.Fatalf("Could not start web server: %v", err)
