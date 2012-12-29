@@ -15,7 +15,9 @@ $(document).ready( function(){
           data: data,
         success: function(responseText) {
           if(responseText = "success"){
-            $(divSuccess).show();            
+            $(divSuccess).show();     
+            title.val() == " ";
+            description.val() == " ";       
           }else{
            $(divError).show();
              //$(submit).attr("disabled", true);

@@ -4,6 +4,7 @@ import (
 	"./backend"
 	"flag"
 	"fmt"
+	"github.com/gorilla/mux"
 	"html/template"
 	"io"
 	"log"
@@ -13,7 +14,7 @@ import (
 const templateDir = "templates"
 
 var (
-	port        = flag.Int("port", 8090, "port server is on")
+	port = flag.Int("port", 8090, "port server is on")
 	mongoConn *backend.MongoDBConn
 )
 
@@ -54,15 +55,16 @@ func main() {
 	mongoConn = backend.NewMongoDBConn()
 	_ = mongoConn.Connect("localhost")
 	defer mongoConn.Stop()
-
 	log.Printf("Starting server on %v", *port)
-	http.Handle("/", http.HandlerFunc(IndexHandler))
-	http.Handle("/add/", http.HandlerFunc(AddHandler))
-	http.Handle("/css/", http.FileServer(http.Dir(".")))
-	http.Handle("/js/", http.FileServer(http.Dir(".")))
-	err := http.ListenAndServe(fmt.Sprintf(":%d", *port), nil)
-	if err != nil {
-		log.Fatalf("Could not start web server: %v", err)
-	}
-
+  r := mux.NewRouter()
+  r.HandleFunc("/", IndexHandler)
+  r.HandleFunc("/add/", AddHandler)
+  r.PathPrefix("/css/").Handler(http.StripPrefix("/css/", 
+          http.FileServer(http.Dir("css/"))))
+  r.PathPrefix("/js/").Handler(http.StripPrefix("/js/", 
+                http.FileServer(http.Dir("js/"))))
+  err := http.ListenAndServe(":8090", r)
+  if err != nil {
+      log.Fatalf("Could not start web server: %v", err)
+  }
 }
