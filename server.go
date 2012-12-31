@@ -42,11 +42,15 @@ func AddHandler(writer http.ResponseWriter, request *http.Request) {
 	}
 	fmt.Fprintln(writer, "success")
 }
+func add(x, y int) int {
+	return x + y
+}
 
 func IndexHandler(writer http.ResponseWriter, request *http.Request) {
 	results := mongoConn.ListToDo()
-	t, _ := template.ParseFiles(templateDir + "/index.html")
-	t.Execute(writer, results)
+	funcs := template.FuncMap{"add": add} 
+  temp := template.Must(template.New("index.html").Funcs(funcs).ParseFiles(templateDir + "/index.html"))
+	temp.Execute(writer, results)
 }
 
 func main() {
